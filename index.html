@@ -6,69 +6,94 @@
     <title>1142 國際策略管理 SMMC - 學生名單</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; transition: background-color 0.5s, color 0.5s; }
+        body { 
+            font-family: 'Inter', 'Noto Sans TC', sans-serif; 
+            transition: background-color 0.5s, color 0.5s; 
+            background-color: #050507;
+            color: white;
+            overflow-x: hidden;
+        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .modal-open { overflow: hidden; }
         .rotate-90 { transform: rotate(90deg); }
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        /* 參考網頁特效 */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            display: inline-block;
+            padding-bottom: 0.1em; 
+            line-height: 1.2;
+            overflow: visible !important;
+        }
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .hover-card {
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hover-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100">
+<body class="bg-[#050507] text-white">
 
     <!-- Header & Nav -->
-    <div id="sticky-header" class="sticky top-0 z-50 backdrop-blur-md border-b border-slate-800/80 bg-slate-950/90 shadow-sm">
-        <header class="py-2 px-4 md:px-8 md:py-4 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2 md:gap-3">
-            <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="setActiveGroup('ALL')" title="返回全部小組">
-                <div class="bg-emerald-500 p-2 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-                    <i data-lucide="users" class="text-white w-5 h-5 md:w-6 md:h-6"></i>
+    <div id="sticky-header" class="sticky top-0 z-50 glass-nav border-b border-white/10 bg-black/40 shadow-sm transition-colors duration-700">
+        <header class="py-2 px-4 md:px-8 md:py-4 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 md:gap-3">
+            <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="scrollToGroup('ALL')" title="返回全部小組">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shrink-0">
+                    <i data-lucide="users" class="w-6 h-6"></i>
                 </div>
                 <div>
-                    <h1 id="ui-title" class="text-lg md:text-3xl font-bold tracking-tight bg-gradient-to-r from-emerald-500 to-emerald-400 bg-clip-text text-transparent">
+                    <h1 id="ui-title" class="text-lg md:text-3xl font-black tracking-tighter text-gradient bg-gradient-to-r from-white via-blue-400 to-indigo-500 leading-none">
                         1142 國際策略管理 SMMC
                     </h1>
-                    <p id="ui-subtitle" class="text-[10px] md:text-base font-medium text-slate-400">學生個人資料名單統整</p>
+                    <p id="ui-subtitle" class="text-[10px] md:text-sm font-semibold text-white/60 tracking-wide mt-0.5 transition-colors duration-700">學生個人資料名單統整</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2 w-full md:w-auto">
                 <div class="relative flex-1 md:w-64">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 md:w-4 md:h-4 text-slate-500"></i>
+                    <i id="search-icon" data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50 transition-colors duration-700"></i>
                     <input 
                         type="text" 
                         id="search-input"
                         placeholder="搜尋姓名、學號、科系、MBTI..."
-                        class="w-full rounded-full py-1.5 md:py-2.5 pl-9 md:pl-10 pr-4 text-xs md:text-base font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all bg-slate-900/50 border border-slate-800 placeholder-slate-600 text-slate-100"
+                        class="w-full rounded-xl py-2 md:py-2.5 pl-10 pr-4 text-xs md:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-700 bg-white/5 border border-white/10 placeholder-white/40 text-white shadow-inner"
                     >
                 </div>
                 
-                <div class="flex items-center gap-0.5 md:gap-1 p-0.5 md:p-1 rounded-full bg-slate-900 border border-slate-800" id="theme-lang-controls">
-                    <button id="theme-toggle" class="p-1.5 md:p-2 rounded-full transition-colors text-emerald-400 hover:bg-slate-800" title="切換主題">
-                        <i data-lucide="sun" class="w-3.5 h-3.5 md:w-5 md:h-5"></i>
-                    </button>
-                    <button id="lang-toggle" class="p-1.5 md:p-2 rounded-full transition-colors text-emerald-400 hover:bg-slate-800" title="切換語言">
-                        <i data-lucide="languages" class="w-3.5 h-3.5 md:w-5 md:h-5"></i>
+                <div class="flex items-center p-1 rounded-xl bg-white/5 border border-white/10 transition-colors duration-700 shadow-inner" id="theme-lang-controls">
+                    <button id="theme-toggle" class="p-2 rounded-lg transition-colors duration-500 hover:bg-white/10 text-yellow-400" title="切換主題">
+                        <i data-lucide="sun" class="w-4 h-4 md:w-5 md:h-5"></i>
                     </button>
                 </div>
             </div>
         </header>
 
-        <nav id="group-nav" class="max-w-7xl mx-auto px-4 pb-2 md:pb-4 flex overflow-x-auto no-scrollbar gap-1.5 md:gap-3 md:px-8">
+        <nav id="group-nav" class="max-w-7xl mx-auto px-4 pb-2 md:pb-4 flex overflow-x-auto no-scrollbar gap-2 md:gap-3 md:px-8">
             <!-- Group buttons will be injected here -->
         </nav>
     </div>
 
     <!-- Main Content -->
-    <main id="main-content" class="max-w-7xl mx-auto p-4 md:p-8 space-y-16 pb-24">
+    <main id="main-content" class="max-w-7xl mx-auto p-4 md:p-8 space-y-16 pb-32">
         <!-- Student groups will be injected here -->
     </main>
 
     <!-- Modal Container -->
-    <div id="modal-container" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
-        <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" id="modal-overlay"></div>
-        <div id="modal-content" class="relative z-10 w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl border bg-slate-900 border-slate-700 overflow-hidden">
+    <div id="modal-container" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6 transition-colors duration-700">
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-md" id="modal-overlay"></div>
+        <div id="modal-content" class="relative z-10 w-full max-w-4xl max-h-[92vh] rounded-[2rem] sm:rounded-[3rem] shadow-[0_80px_160px_rgba(0,0,0,1)] border bg-[#0a0a0c] border-white/10 overflow-hidden transition-colors duration-700">
             <!-- Modal details injected here -->
         </div>
     </div>
@@ -173,21 +198,13 @@
                 group: "第", groupEnd: "組", leader: "組長", member: "組員", timeLoc: "討論時間/地點",
                 bio: "一句話描述", dept: "系級", sid: "學號", mbti: "MBTI", experience: "經歷",
                 motivation: "動機與期待", needs: "需要哪些協助", allGroups: "全部小組"
-            },
-            EN: {
-                title: "1142 Strategic Management", subtitle: "SMMC Student Directory", searchPlaceholder: "Search by name, ID, MBTI...",
-                group: "Group ", groupEnd: "", leader: "Leader", member: "Member", timeLoc: "Meeting Time",
-                bio: "Bio", dept: "Dept.", sid: "ID", mbti: "MBTI", experience: "Exp.",
-                motivation: "Motivation", needs: "Needs Help", allGroups: "All Groups"
             }
         };
 
         const ROTATE_90_SIDS = ['112104009', '112407035', '112251009', '112251033', '112251021', '112212068'];
 
         // --- State ---
-        let lang = 'ZH';
         let isDarkMode = true;
-        let activeGroup = 'ALL';
         let searchTerm = '';
         let parsedData = [];
         let studentsMap = new Map();
@@ -209,19 +226,14 @@
         }
 
         function render() {
-            const t = I18N[lang];
+            const t = I18N['ZH'];
             
-            // Header
-            document.getElementById('ui-title').innerText = t.title;
-            document.getElementById('ui-subtitle').innerText = t.subtitle;
-            document.getElementById('search-input').placeholder = t.searchPlaceholder;
-
             // Nav
             const nav = document.getElementById('group-nav');
-            nav.innerHTML = `<button onclick="setActiveGroup('ALL')" class="px-4 md:px-6 py-1.5 md:py-2.5 rounded-xl text-xs md:text-base font-bold whitespace-nowrap transition-all ${activeGroup === 'ALL' ? 'bg-emerald-500 text-white shadow-lg' : (isDarkMode ? 'bg-slate-900 text-slate-400' : 'bg-white text-slate-600 border')}">${t.allGroups}</button>`;
+            nav.innerHTML = `<button id="nav-btn-ALL" onclick="scrollToGroup('ALL')" class="px-4 md:px-6 py-1.5 md:py-2.5 rounded-xl text-xs md:text-base font-bold whitespace-nowrap transition-all duration-500 ${isDarkMode ? 'bg-white/5 border border-white/10 hover:bg-white/10 text-white hover:text-blue-400 shadow-lg' : 'bg-white text-slate-600 border border-black/10 hover:text-blue-600 shadow-sm'}">${t.allGroups}</button>`;
             parsedData.forEach(g => {
-                const btnLabel = lang === 'EN' ? `Group ${g.num}` : `第${g.num}組`;
-                nav.innerHTML += `<button onclick="setActiveGroup('${g.id}')" class="px-4 md:px-6 py-1.5 md:py-2.5 rounded-xl text-xs md:text-base font-bold whitespace-nowrap transition-all ${activeGroup === g.id ? 'bg-emerald-500 text-white shadow-lg' : (isDarkMode ? 'bg-slate-900 text-slate-400' : 'bg-white text-slate-600 border')}">${btnLabel}</button>`;
+                const btnLabel = `第${g.num}組`;
+                nav.innerHTML += `<button id="nav-btn-${g.id}" onclick="scrollToGroup('${g.id}')" class="px-4 md:px-6 py-1.5 md:py-2.5 rounded-xl text-xs md:text-base font-bold whitespace-nowrap transition-all duration-500 ${isDarkMode ? 'bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 hover:text-white shadow-lg' : 'bg-white text-slate-600 border border-black/10 hover:bg-slate-50 hover:text-blue-600 shadow-sm'}">${btnLabel}</button>`;
             });
 
             // Main Content
@@ -229,7 +241,6 @@
             main.innerHTML = '';
             
             const filtered = parsedData.filter(g => {
-                if(searchTerm === '' && activeGroup !== 'ALL' && g.id !== activeGroup) return false;
                 const matchesSearch = g.members.some(m => 
                     m.name.toLowerCase().includes(searchTerm) || 
                     m.sid.includes(searchTerm) || 
@@ -240,23 +251,23 @@
             });
 
             if(filtered.length === 0) {
-                main.innerHTML = `<div class="text-center py-24 text-slate-500 border-2 border-dashed border-slate-800 rounded-3xl">無搜尋結果。</div>`;
+                main.innerHTML = `<div class="text-center py-24 transition-colors duration-700 ${isDarkMode ? 'text-white/40 border-white/10' : 'text-slate-400 border-slate-200'} border-2 border-dashed rounded-3xl">無搜尋結果。</div>`;
             }
 
             filtered.forEach(g => {
-                const groupTitle = lang === 'EN' ? `Group ${g.num}` : `第${g.num}組`;
+                const groupTitle = `第${g.num}組`;
                 let groupHTML = `
-                    <section class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b-2 border-emerald-500 pb-2">
+                    <section id="section-${g.id}" class="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 scroll-mt-32 md:scroll-mt-40">
+                        <div class="flex flex-col md:flex-row md:items-end justify-between gap-2 border-b-2 border-blue-500/50 pb-2">
                             <div>
-                                <h2 class="text-3xl md:text-4xl font-bold">${groupTitle}</h2>
-                                <div class="flex items-center gap-2 text-sm md:text-lg mt-2 font-medium text-slate-400">
-                                    <i data-lucide="message-circle" class="w-4 h-4 text-emerald-500"></i>
+                                <h2 class="text-3xl md:text-4xl font-black ${isDarkMode ? 'text-white' : 'text-slate-900'} transition-colors duration-700">${groupTitle}</h2>
+                                <div class="flex items-center gap-2 text-sm md:text-lg mt-2 font-medium transition-colors duration-700 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}">
+                                    <i data-lucide="message-circle" class="w-4 h-4 text-blue-500"></i>
                                     <span>${t.timeLoc}: ${g.time}</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
+                        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
                 `;
 
                 g.members.forEach(m => {
@@ -267,21 +278,23 @@
                        !m.mbti.toLowerCase().includes(searchTerm) && 
                        !m.dept.toLowerCase().includes(searchTerm)) return;
                     
-                    const imgUrl = m.photo?.length > 10 ? `https://lh3.googleusercontent.com/u/0/d/${m.photo}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=10b981&color=fff`;
+                    const imgUrl = m.photo?.length > 10 ? `https://lh3.googleusercontent.com/u/0/d/${m.photo}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(m.name)}&background=2563eb&color=fff`;
                     const rotateClass = ROTATE_90_SIDS.includes(m.sid) ? 'rotate-90' : '';
+                    
+                    // 修改組長/組員的標籤為不透明，且字體與留白放大
                     const roleLabel = m.isLeader ? t.leader : t.member;
-                    const roleClass = m.isLeader ? 'bg-emerald-500 text-white' : (isDarkMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-500');
+                    const roleClass = m.isLeader ? 'bg-blue-600 text-white shadow-md' : (isDarkMode ? 'bg-slate-700 text-white shadow-md' : 'bg-slate-100 text-slate-800 border border-slate-200 shadow-md');
 
                     groupHTML += `
-                        <div onclick="openModal('${m.sid}')" class="group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl ${isDarkMode ? 'bg-slate-900 border border-slate-800 hover:border-emerald-500/50' : 'bg-white border shadow-sm hover:border-emerald-500'}">
-                            <div class="absolute top-4 right-4 z-10 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${roleClass}">${roleLabel}</div>
-                            <div class="relative aspect-[4/5] bg-slate-800 overflow-hidden flex items-center justify-center">
-                                <img src="${imgUrl}" class="w-full h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500 ${rotateClass}">
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent opacity-60"></div>
-                                <div class="absolute bottom-3 left-3 right-3">
-                                    <h3 class="text-lg md:text-2xl font-bold text-white group-hover:text-emerald-400 transition-colors">${m.name}</h3>
-                                    <p class="text-[10px] md:text-sm text-emerald-400/80 font-semibold truncate">${m.dept}</p>
-                                    <p class="text-[10px] md:text-sm text-slate-400">${m.sid}</p>
+                        <div onclick="openModal('${m.sid}')" class="hover-card group relative rounded-[2.5rem] overflow-hidden cursor-pointer border shadow-2xl transition-colors duration-700 ${isDarkMode ? 'bg-[#0a0a0c] border-white/10 hover:border-blue-500/50' : 'bg-white border-black/5 hover:border-blue-400'}">
+                            <div class="absolute top-4 right-4 z-10 px-4 py-1.5 rounded-full text-xs md:text-sm font-black uppercase tracking-widest ${roleClass}">${roleLabel}</div>
+                            <div class="relative aspect-[4/5] overflow-hidden flex items-center justify-center transition-colors duration-700 ${isDarkMode ? 'bg-[#0e0e12]' : 'bg-slate-100'}">
+                                <img src="${imgUrl}" class="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105 ${rotateClass}">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-700"></div>
+                                <div class="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6">
+                                    <h3 class="text-xl md:text-3xl font-black text-white group-hover:text-blue-400 transition-colors duration-500 leading-tight mb-1">${m.name}</h3>
+                                    <p class="text-[10px] md:text-sm text-emerald-400 font-bold uppercase tracking-widest truncate">${m.dept}</p>
+                                    <p class="text-[10px] md:text-sm text-white/50 font-semibold tracking-wider mt-1">${m.sid}</p>
                                 </div>
                             </div>
                         </div>
@@ -296,93 +309,102 @@
             if (window.lucide) {
                 window.lucide.createIcons();
             }
+            
+            setupScrollSpy();
+            if (window.scrollY < 150 && searchTerm === '') {
+                updateNavButtonsStyle('ALL');
+            }
         }
 
         // --- Interaction ---
-        function setActiveGroup(id) {
-            activeGroup = id;
-            render();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function scrollToGroup(id) {
+            // 如果目前正在搜尋狀態，點擊小組按鈕時先清空搜尋條件以顯示完整列表
+            if (searchTerm !== '') {
+                searchTerm = '';
+                document.getElementById('search-input').value = '';
+                render();
+            }
+
+            if (id === 'ALL') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                // 給予微小延遲確保 DOM 已完全重新渲染（特別是清空搜尋時）
+                setTimeout(() => {
+                    const el = document.getElementById('section-' + id);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }, 50);
+            }
         }
 
         function openModal(sid) {
             const student = studentsMap.get(sid);
             if(!student) return;
-            const t = I18N[lang];
-            const imgUrl = student.photo?.length > 10 ? `https://lh3.googleusercontent.com/u/0/d/${student.photo}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=10b981&color=fff`;
+            const t = I18N['ZH'];
+            const imgUrl = student.photo?.length > 10 ? `https://lh3.googleusercontent.com/u/0/d/${student.photo}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(student.name)}&background=2563eb&color=fff`;
             const rotateClass = ROTATE_90_SIDS.includes(student.sid) ? 'rotate-90' : '';
 
             const modal = document.getElementById('modal-content');
             modal.innerHTML = `
-                <button onclick="closeModal()" class="absolute top-4 right-4 z-50 p-2 rounded-full bg-slate-800/50 hover:bg-slate-800 text-white transition-colors">
-                    <i data-lucide="x" class="w-6 h-6"></i>
+                <button onclick="closeModal()" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 p-2.5 rounded-full bg-black/60 text-white hover:bg-black/90 backdrop-blur-md transition-all duration-300 shadow-lg">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
-                <div class="flex flex-col md:flex-row w-full h-full max-h-[90vh] overflow-y-auto md:overflow-hidden no-scrollbar">
+                <div class="flex flex-col lg:flex-row w-full h-full max-h-[92vh] overflow-y-auto lg:overflow-hidden no-scrollbar">
                     
-                    <!-- 手機版：上方區域 (包含照片與基本資訊)，置中對齊 -->
-                    <!-- 電腦版：左側區域 (僅包含照片)，置中對齊 -->
-                    <div class="shrink-0 flex flex-col items-center justify-center p-8 pb-4 md:pb-8 md:w-2/5 ${isDarkMode ? 'bg-slate-900' : 'bg-slate-50'} md:border-r border-slate-800">
-                        <div class="w-full max-w-[240px] md:max-w-none aspect-[4/5] rounded-3xl overflow-hidden border-4 border-emerald-500 shadow-xl bg-slate-800">
-                            <img src="${imgUrl}" class="w-full h-full object-cover ${rotateClass}">
-                        </div>
-                        
-                        <!-- 手機版限定：在照片下方顯示姓名與學號等基本資訊，與新資料並排對齊 -->
-                        <div class="mt-6 md:hidden flex justify-between items-start w-full text-left">
-                            <div class="flex-1 pr-2">
-                                <h3 class="text-xl font-bold">${student.name}</h3>
-                                <p class="text-emerald-500 font-semibold text-sm mt-1">${student.dept} • ${student.sid}</p>
-                                <div class="mt-2 inline-block px-2 py-1 rounded-lg ${isDarkMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-200 text-slate-700'} text-[10px] font-bold tracking-widest">${t.mbti}: ${student.mbti}</div>
-                            </div>
-                            <div class="text-right text-[10px] leading-relaxed space-y-0.5 shrink-0 max-w-[55%] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}">
-                                <p><span class="font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}">畢業：</span>${student.school || '---'}</p>
-                                <p><span class="font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}">入學：</span>${student.admission || '---'}</p>
-                                <p><span class="font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}">戶籍：</span>${student.hometown || '---'}</p>
-                                <p><span class="font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}">現住：</span>${student.residence || '---'}</p>
-                            </div>
-                        </div>
+                    <!-- 照片滿版區域 (左側/上方) -->
+                    <div class="w-full lg:w-2/5 shrink-0 relative bg-slate-900 min-h-[350px] lg:min-h-0 border-b lg:border-b-0 lg:border-r border-white/10 overflow-hidden">
+                        <img src="${imgUrl}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105 ${rotateClass}">
                     </div>
                     
-                    <!-- 手機版：下方區域 (附加資料)，靠左對齊 -->
-                    <!-- 電腦版：右側區域 (完整文字內容)，靠左對齊 -->
-                    <div class="p-8 pt-4 md:pt-8 space-y-6 md:overflow-y-auto no-scrollbar md:w-3/5 text-left">
+                    <!-- 內容區域 (右側/下方) -->
+                    <div class="w-full lg:w-3/5 flex-1 p-6 sm:p-10 lg:p-12 lg:overflow-y-auto no-scrollbar text-left flex flex-col transition-colors duration-700 ${isDarkMode ? 'bg-[#0a0a0c]' : 'bg-white'}">
                         
-                        <!-- 電腦版限定：在右側上方顯示姓名與學號等基本資訊，並排右側顯示新資料 -->
-                        <div class="hidden md:flex justify-between items-start w-full">
-                            <div class="flex-1 pr-4">
-                                <h3 class="text-4xl font-bold">${student.name}</h3>
-                                <p class="text-emerald-500 font-semibold text-lg mt-1">${student.dept} • ${student.sid}</p>
-                                <div class="mt-2 inline-block px-3 py-1 rounded-lg ${isDarkMode ? 'bg-slate-800 text-slate-300' : 'bg-slate-200 text-slate-700'} text-xs font-bold tracking-widest">${t.mbti}: ${student.mbti}</div>
+                        <!-- 姓名與基本資料 -->
+                        <div class="flex flex-col xl:flex-row justify-start items-start w-full mb-6 gap-6 xl:gap-12 pr-14 sm:pr-16">
+                            <div class="flex-none">
+                                <h3 class="text-2xl md:text-3xl font-black transition-colors duration-700 ${isDarkMode ? 'text-white' : 'text-slate-900'} leading-tight mb-2">${student.name}</h3>
+                                <p class="text-blue-500 font-bold text-sm tracking-wide uppercase">${student.dept} • ${student.sid}</p>
+                                <div class="mt-3 inline-block px-3 py-1 rounded-full transition-colors duration-700 ${isDarkMode ? 'bg-white/10 text-white/80' : 'bg-slate-200 text-slate-700'} text-xs font-black tracking-widest">${t.mbti}: ${student.mbti}</div>
                             </div>
-                            <div class="text-right text-sm leading-relaxed space-y-1 shrink-0 max-w-[50%] ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}">
-                                <p><span class="font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}">畢業學校：</span>${student.school || '---'}</p>
-                                <p><span class="font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}">入學方式：</span>${student.admission || '---'}</p>
-                                <p><span class="font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}">戶籍：</span>${student.hometown || '---'}</p>
-                                <p><span class="font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}">現住：</span>${student.residence || '---'}</p>
+                            
+                            <!-- 附加資料：畢業/入學/戶籍/現住 -->
+                            <div class="text-left text-xs md:text-sm leading-relaxed space-y-1 w-full xl:w-auto font-medium transition-colors duration-700 ${isDarkMode ? 'text-white/60 bg-white/5 xl:bg-transparent' : 'text-slate-600 bg-slate-50 xl:bg-transparent'} p-4 xl:p-0 rounded-xl xl:rounded-none">
+                                <p><span class="font-bold tracking-widest transition-colors duration-700 ${isDarkMode ? 'text-white/90' : 'text-slate-800'}">畢業學校：</span>${student.school || '---'}</p>
+                                <p><span class="font-bold tracking-widest transition-colors duration-700 ${isDarkMode ? 'text-white/90' : 'text-slate-800'}">入學方式：</span>${student.admission || '---'}</p>
+                                <p><span class="font-bold tracking-widest transition-colors duration-700 ${isDarkMode ? 'text-white/90' : 'text-slate-800'}">戶籍：</span>${student.hometown || '---'}</p>
+                                <p><span class="font-bold tracking-widest transition-colors duration-700 ${isDarkMode ? 'text-white/90' : 'text-slate-800'}">現住：</span>${student.residence || '---'}</p>
                             </div>
                         </div>
 
-                        <div class="relative p-6 rounded-2xl border ${isDarkMode ? 'bg-slate-950/50 border-slate-800 text-slate-300' : 'bg-slate-100 border-slate-200'} italic font-medium leading-relaxed">
-                            “ ${student.bio || '尚未填寫自介'} ”
+                        <!-- 一句話代表自己 (縮小框框與文字) -->
+                        <div class="relative p-5 rounded-2xl border italic font-medium leading-relaxed text-sm md:text-base transition-colors duration-700 ${isDarkMode ? 'bg-white/5 border-white/10 text-white/90' : 'bg-slate-50 border-black/5 text-slate-800'}">
+                            <span class="absolute -top-3 left-4 text-3xl font-serif font-black transition-colors duration-700 ${isDarkMode ? 'text-white/20' : 'text-black/10'}">"</span>
+                            <span class="relative z-10 block pt-1">${student.bio || '尚未填寫自介'}</span>
                         </div>
                         
-                        <div class="space-y-6 pt-4 border-t border-slate-800 text-left">
+                        <!-- 詳細文字內容 (放大文字) -->
+                        <div class="space-y-6 md:space-y-8 pt-8 mt-8 border-t transition-colors duration-700 ${isDarkMode ? 'border-white/10' : 'border-black/10'} text-left">
                             <div>
-                                <div class="flex items-center gap-2 mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">
-                                    <i data-lucide="briefcase" class="w-4 h-4 text-emerald-500 shrink-0"></i> ${t.experience}
+                                <div class="flex items-center gap-3 mb-2 text-xs md:text-sm font-black uppercase tracking-[0.2em] transition-colors duration-700 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}">
+                                    <div class="p-1.5 rounded-md bg-blue-500/10 text-blue-500 shrink-0"><i data-lucide="briefcase" class="w-4 h-4 md:w-5 md:h-5"></i></div>
+                                    ${t.experience}
                                 </div>
-                                <p class="text-sm md:text-base leading-relaxed">${student.experience || '---'}</p>
+                                <p class="text-base md:text-lg leading-relaxed font-medium transition-colors duration-700 ${isDarkMode ? 'text-white/90' : 'text-slate-800'} pl-1">${student.experience || '---'}</p>
                             </div>
                             <div>
-                                <div class="flex items-center gap-2 mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">
-                                    <i data-lucide="target" class="w-4 h-4 text-emerald-500 shrink-0"></i> ${t.motivation}
+                                <div class="flex items-center gap-3 mb-2 text-xs md:text-sm font-black uppercase tracking-[0.2em] transition-colors duration-700 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}">
+                                    <div class="p-1.5 rounded-md bg-emerald-500/10 text-emerald-500 shrink-0"><i data-lucide="target" class="w-4 h-4 md:w-5 md:h-5"></i></div>
+                                    ${t.motivation}
                                 </div>
-                                <p class="text-sm md:text-base leading-relaxed">${student.motivation || '---'}</p>
+                                <p class="text-base md:text-lg leading-relaxed font-medium transition-colors duration-700 ${isDarkMode ? 'text-white/90' : 'text-slate-800'} pl-1">${student.motivation || '---'}</p>
                             </div>
                             <div>
-                                <div class="flex items-center gap-2 mb-1 text-xs font-bold text-slate-500 uppercase tracking-widest">
-                                    <i data-lucide="message-circle" class="w-4 h-4 text-emerald-500 shrink-0"></i> ${t.needs}
+                                <div class="flex items-center gap-3 mb-2 text-xs md:text-sm font-black uppercase tracking-[0.2em] transition-colors duration-700 ${isDarkMode ? 'text-white/50' : 'text-slate-500'}">
+                                    <div class="p-1.5 rounded-md bg-purple-500/10 text-purple-500 shrink-0"><i data-lucide="message-circle" class="w-4 h-4 md:w-5 md:h-5"></i></div>
+                                    ${t.needs}
                                 </div>
-                                <p class="text-sm md:text-base leading-relaxed">${student.needs || '---'}</p>
+                                <p class="text-base md:text-lg leading-relaxed font-medium transition-colors duration-700 ${isDarkMode ? 'text-white/90' : 'text-slate-800'} pl-1">${student.needs || '---'}</p>
                             </div>
                         </div>
                     </div>
@@ -403,6 +425,83 @@
             document.body.classList.remove('modal-open');
         }
 
+        // --- Intersection Observer Logic ---
+        let scrollObserver = null;
+
+        function setupScrollSpy() {
+            if (scrollObserver) scrollObserver.disconnect();
+            if (searchTerm !== '') return; // 搜尋狀態下不執行跟隨
+
+            const sections = document.querySelectorAll('section[id^="section-"]');
+            if (sections.length === 0) return;
+
+            scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id.replace('section-', '');
+                        const btn = document.getElementById('nav-btn-' + id);
+                        const nav = document.getElementById('group-nav');
+                        if (btn && nav) {
+                            // 改用 nav.scrollTo 僅針對導覽列水平捲動，避免 scrollIntoView 干擾視窗整體的垂直滑動
+                            nav.scrollTo({
+                                left: btn.offsetLeft - nav.offsetWidth / 2 + btn.offsetWidth / 2,
+                                behavior: 'smooth'
+                            });
+                            updateNavButtonsStyle(id);
+                        }
+                    }
+                });
+            }, { rootMargin: '-20% 0px -70% 0px' });
+
+            sections.forEach(sec => scrollObserver.observe(sec));
+        }
+
+        function updateNavButtonsStyle(activeId) {
+            document.querySelectorAll('#group-nav button').forEach(btn => {
+                const isAll = btn.id === 'nav-btn-ALL';
+                const isActive = btn.id === ('nav-btn-' + activeId);
+                
+                if (isDarkMode) {
+                    // Reset
+                    btn.classList.remove('text-blue-400', 'bg-white/10');
+                    if (isAll) {
+                        btn.classList.add('text-white');
+                    } else {
+                        btn.classList.add('text-white/60');
+                    }
+                    
+                    // Set Active
+                    if (isActive) {
+                        btn.classList.remove('text-white', 'text-white/60');
+                        btn.classList.add('text-blue-400', 'bg-white/10');
+                    }
+                } else {
+                    // Reset
+                    btn.classList.remove('text-blue-600', 'bg-slate-50');
+                    btn.classList.add('text-slate-600');
+                    
+                    // Set Active
+                    if (isActive) {
+                        btn.classList.remove('text-slate-600');
+                        btn.classList.add('text-blue-600', 'bg-slate-50');
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY < 150 && searchTerm === '') {
+                const allBtn = document.getElementById('nav-btn-ALL');
+                if (allBtn && !allBtn.classList.contains('text-blue-400') && !allBtn.classList.contains('text-blue-600')) {
+                    const nav = document.getElementById('group-nav');
+                    if (nav) {
+                        nav.scrollTo({ left: 0, behavior: 'smooth' });
+                    }
+                    updateNavButtonsStyle('ALL');
+                }
+            }
+        });
+
         // --- Event Listeners ---
         document.getElementById('search-input').addEventListener('input', (e) => {
             searchTerm = e.target.value.toLowerCase();
@@ -416,32 +515,28 @@
             const controls = document.getElementById('theme-lang-controls');
             const icon = document.querySelector('#theme-toggle i');
             const searchInput = document.getElementById('search-input');
+            const title = document.getElementById('ui-title');
 
             if(isDarkMode) {
-                body.className = "bg-slate-950 text-slate-100";
-                header.className = "sticky top-0 z-50 backdrop-blur-md border-b border-slate-800/80 bg-slate-950/90 shadow-sm";
-                controls.className = "flex items-center gap-0.5 md:gap-1 p-0.5 md:p-1 rounded-full bg-slate-900 border border-slate-800";
-                searchInput.className = "w-full rounded-full py-1.5 md:py-2.5 pl-9 md:pl-10 pr-4 text-xs md:text-base font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all bg-slate-900/50 border border-slate-800 placeholder-slate-600 text-slate-100";
+                body.className = "bg-[#050507] text-white";
+                header.className = "sticky top-0 z-50 glass-nav border-b border-white/10 bg-black/40 shadow-sm transition-colors duration-700";
+                controls.className = "flex items-center p-1 rounded-xl bg-white/5 border border-white/10 transition-colors duration-700 shadow-inner";
+                searchInput.className = "w-full rounded-xl py-2 md:py-2.5 pl-10 pr-4 text-xs md:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-700 bg-white/5 border border-white/10 placeholder-white/40 text-white shadow-inner";
+                title.className = "text-lg md:text-3xl font-black tracking-tighter text-gradient bg-gradient-to-r from-white via-blue-400 to-indigo-500 leading-none";
                 if (icon) {
-                    // Update lucide icon dataset attribute before re-rendering
                     icon.dataset.lucide = 'sun';
                 }
             } else {
                 body.className = "bg-slate-50 text-slate-900";
-                header.className = "sticky top-0 z-50 backdrop-blur-md border-b border-slate-200 bg-white/90 shadow-sm";
-                controls.className = "flex items-center gap-0.5 md:gap-1 p-0.5 md:p-1 rounded-full bg-slate-100 border border-slate-200";
-                searchInput.className = "w-full rounded-full py-1.5 md:py-2.5 pl-9 md:pl-10 pr-4 text-xs md:text-base font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-all bg-slate-100 border border-slate-300 placeholder-slate-500 text-slate-900";
+                header.className = "sticky top-0 z-50 glass-nav border-b border-black/10 bg-white/60 shadow-sm transition-colors duration-700";
+                controls.className = "flex items-center p-1 rounded-xl bg-black/5 border border-black/10 transition-colors duration-700 shadow-inner";
+                searchInput.className = "w-full rounded-xl py-2 md:py-2.5 pl-10 pr-4 text-xs md:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-700 bg-white border border-black/10 placeholder-slate-500 text-slate-900 shadow-inner";
+                title.className = "text-lg md:text-3xl font-black tracking-tighter text-gradient bg-gradient-to-r from-black via-blue-700 to-blue-900 leading-none";
                 if (icon) {
-                     // Update lucide icon dataset attribute before re-rendering
                     icon.dataset.lucide = 'moon';
                 }
             }
             
-            render();
-        });
-
-        document.getElementById('lang-toggle').addEventListener('click', () => {
-            lang = lang === 'ZH' ? 'EN' : 'ZH';
             render();
         });
 
